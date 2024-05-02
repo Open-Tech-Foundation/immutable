@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter=demo run dev",
+    "build": "pnpm --filter=@opentf/immutable run build",
+    "test": "pnpm --filter=@opentf/immutable run test",
+    "ci": "pnpm --filter=@opentf/immutable run ci",
+    "publish-packages": "pnpm run build && pnpm run test && changeset version && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1"
+  }
+}
