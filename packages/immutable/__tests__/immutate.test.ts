@@ -93,6 +93,33 @@ describe("immutate", () => {
     expect(out[3]).toBe(5);
   });
 
+  test("pop an array value", () => {
+    const o = [1, 2, 3];
+    const out = immutate(o, (draft) => {
+      draft.pop();
+    });
+    expect(out).not.toBe(o);
+    expect(out[2]).toBe(undefined);
+  });
+
+  test("shift an array value", () => {
+    const o = [1, 2, 3];
+    const out = immutate(o, (draft) => {
+      draft.shift();
+    });
+    expect(out).not.toBe(o);
+    expect(out[0]).toBe(2);
+  });
+
+  test("unshift an array value", () => {
+    const o = [1, 2, 3];
+    const out = immutate(o, (draft) => {
+      draft.unshift({ id: "3", done: false, body: "Buy bananas" });
+    });
+    expect(out).not.toBe(o);
+    expect(out[0]).toEqual({ id: "3", done: false, body: "Buy bananas" });
+  });
+
   test("remove an array index", () => {
     const o = [1, 2, 3];
     const out = immutate(o, (draft) => {
@@ -155,5 +182,26 @@ describe("immutate", () => {
       "sturgeon",
       "queen",
     ]);
+  });
+
+  test("array concat", () => {
+    const o = { a: ["a", "b", "c"] };
+    const array2 = ["d", "e", "f"];
+
+    const out = immutate(o, (draft) => {
+      draft.a = draft.a.concat(array2);
+    });
+    expect(out).not.toBe(o);
+    expect(out.a).toEqual(["a", "b", "c", "d", "e", "f"]);
+  });
+
+  test("array filter", () => {
+    const o = ["spray", "elite", "exuberant", "destruction", "present"];
+
+    const out = immutate(o, (draft, replace) => {
+      replace(draft.filter((word) => word.length > 6));
+    });
+    expect(out).not.toBe(o);
+    expect(out).toEqual(["exuberant", "destruction", "present"]);
   });
 });

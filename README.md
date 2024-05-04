@@ -6,6 +6,45 @@
 
 WIP
 
+## Usage
+
+```js
+import { immutate } from "@opentf/immutable";
+
+const obj = {
+  todos: [
+    {
+      title: "Todo 1",
+      done: true,
+    },
+    {
+      title: "Todo 2",
+      done: false,
+    },
+  ],
+};
+
+const next = immutate(obj, (draft) => {
+  draft.todos[1].done = true;
+  draft.todos.push({ title: "Todo 3", done: false });
+});
+
+console.log(next);
+/*
+{
+  todos: [
+    { title: 'Todo 1', done: true },
+    { title: 'Todo 2', done: true },
+    { title: 'Todo 3', done: false }
+  ]
+}
+*/
+
+console.log(next === obj); //=> false
+console.log(next.todos[0] === obj.todos[0]); //=> true
+console.log(next.todos[1] === obj.todos[1]); //=> false
+```
+
 ## Benchmark
 
 ```diff

@@ -1,61 +1,23 @@
-import { DiffResult, diff } from "@opentf/obj-diff";
-import { clone, isArr, isObj, set } from "@opentf/std";
+import { diff } from "@opentf/obj-diff";
+import { clone } from "@opentf/std";
+import applyPatches from "./applyPatches";
 
-function applyPatches(obj: object, patches: Array<DiffResult>) {
-  let out, curObj;
+export default function immutate<T>(
+  obj: T,
+  fn: (draft: T, replace: (val: unknown) => void) => void
+): T {
+  let c = clone(obj);
 
-  if (Array.isArray(obj)) {
-    out = [...obj];
+  let replace = false;
+
+  fn(c, (val: unknown) => {
+    replace = true;
+    c = val as T;
+  });
+
+  if (replace) {
+    return c
   }
-
-  if (isObj(obj)) {
-    out = { ...obj };
-  }
-
-  for (const patch of patches) {
-    curObj = out;
-    const len = patch.p.length;
-
-    for (let i = 0; i < len; i++) {
-      const k = patch.p[i];
-
-      if (i === len - 1) {
-        if (patch.t === 0) {
-          if (Array.isArray(curObj)) {
-            curObj.splice(k as number, 1);
-            continue;
-          }
-          delete curObj[k];
-          continue;
-        }
-        curObj[k] = patch.v;
-      }
-
-      const val = curObj[k];
-
-      if (typeof val === "object") {
-        if (isArr(val)) {
-          curObj[k] = [...val];
-          curObj = curObj[k];
-          continue;
-        }
-
-        if (isObj(val)) {
-          curObj[k] = { ...val };
-          curObj = curObj[k];
-          continue;
-        }
-      }
-    }
-  }
-
-  return out;
-}
-
-export default function immutate<T>(obj: T, fn: (draft: T) => void): T {
-  const c = clone(obj);
-
-  fn(c);
 
   const patches = diff(obj as object, c as object);
 
