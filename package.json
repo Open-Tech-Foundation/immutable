@@ -8,6 +8,10 @@
     "publish-packages": "pnpm run build && pnpm run test && changeset version && changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.1"
+    "@changesets/cli": "^2.27.1",
+    "immer": "^10.1.1",
+    "mutative": "^1.0.5",
+    "structurajs": "^0.12.0",
+    "tinybench": "^2.8.0"
   }
 }
